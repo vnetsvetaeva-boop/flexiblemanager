@@ -1,0 +1,250 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<link href="https://fonts.googleapis.com/css2?family=Bai+Jamjuree:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+*{margin:0;padding:0;box-sizing:border-box}
+body{font-family:'Bai Jamjuree',sans-serif;background:#fff;color:#000;padding:20px 28px;line-height:1.5;max-width:100%;margin:0 auto}
+
+.header{background:linear-gradient(135deg,#80EAFF 0%,#50D0ED 100%);border-radius:12px;padding:18px 26px 14px;margin-bottom:16px}
+.header-eyebrow{font-size:.75rem;font-weight:600;color:rgba(0,60,80,.5);text-transform:uppercase;letter-spacing:1.2px;margin-bottom:4px}
+.header-title{font-size:28px;font-weight:700;color:#0A3D4F;line-height:1.2}
+.header-sub{font-size:16px;color:rgba(0,60,80,.55);margin-top:4px}
+
+.toolbar{display:flex;justify-content:flex-end;gap:10px;margin-bottom:12px}
+.btn{font-family:inherit;font-size:18px;font-weight:700;padding:14px;min-width:150px;border-radius:10px;border:2px solid transparent;cursor:pointer;transition:all .15s}
+.btn-primary{background:#80EAFF;color:#0A3D4F;border-color:#50D0ED}
+.btn-primary:hover:not(:disabled){background:#50D0ED}
+.btn-primary:disabled{background:#f4f4f3;color:#aaa;border-color:#ecedea;cursor:not-allowed}
+.btn-ghost{background:#fff;color:#555;border-color:#ecedea}
+.btn-ghost:hover{background:#f7f7f5}
+
+.board{display:grid;grid-template-columns:1fr 1.15fr 1fr;gap:12px;background:#f0f0f0;border-radius:12px;padding:12px}
+.zone{background:#f7f7f5;border:2px dashed #d3d4d0;border-radius:10px;padding:12px;min-height:340px;transition:background .15s,border-color .15s;display:flex;flex-direction:column}
+.zone.over{background:rgba(128,234,255,.2);border-color:#50D0ED}
+.zone-a{border-top:4px solid #10B981}
+.zone-b{border-top:4px solid #50D0ED}
+.zone-title{font-size:16px;font-weight:700;color:#000;line-height:1.25;margin-bottom:8px;display:flex;justify-content:space-between;gap:8px;align-items:flex-start}
+.zone-count{font-size:11px;font-weight:600;text-transform:uppercase;letter-spacing:.4px;padding:3px 8px;border-radius:4px;flex-shrink:0}
+.zone-a .zone-count{background:#ECFDF5;color:#065F46}
+.zone-b .zone-count{background:#E0F7FF;color:#0E7490}
+.zone-empty{font-size:14px;color:#999;text-align:center;margin:auto 0;padding:10px}
+
+.stage{position:relative;display:flex;align-items:center;justify-content:center;min-height:340px;touch-action:none}
+.stage-msg{font-size:18px;font-weight:600;color:#0A3D4F;text-align:center;padding:20px}
+
+.note{padding:16px 16px 18px;border-radius:4px;font-weight:600;line-height:1.35;box-shadow:3px 6px 8px rgba(0,0,0,.18);user-select:none;-webkit-user-select:none}
+.note-big{width:100%;max-width:300px;min-height:200px;font-size:20px;text-align:center;cursor:grab;touch-action:none;display:flex;align-items:center;justify-content:center;animation:pop .45s cubic-bezier(.2,1.4,.4,1)}
+.note-big:active{cursor:grabbing}
+.note-mini{font-size:14px;margin-bottom:10px;padding:10px 12px 12px;cursor:pointer;box-shadow:2px 4px 6px rgba(0,0,0,.15);animation:land .3s ease-out;transition:transform .15s}
+.note-mini:hover{transform:scale(1.03) rotate(0deg)!important}
+.locked .note-mini{cursor:default}
+.locked .note-mini:hover{transform:none!important}
+.ghost{position:fixed;z-index:999;pointer-events:none;box-shadow:6px 14px 24px rgba(0,60,80,.3)}
+@keyframes pop{from{opacity:0;transform:scale(.6) rotate(-12deg)}to{opacity:1}}
+@keyframes land{from{opacity:0;transform:scale(1.25)}to{opacity:1}}
+
+.c0{background:#80EAFF;color:#0A3D4F}
+.c1{background:#0A3D4F;color:#fff}
+.c2{background:#fff;color:#0A3D4F}
+.c3{background:#50D0ED;color:#0A3D4F}
+.c4{background:#A7F3D0;color:#064E3B}
+.c5{background:#FFE680;color:#5C4600}
+
+.footer{display:flex;align-items:center;justify-content:space-between;gap:16px;margin-top:12px}
+.hint{font-size:14px;color:#999}
+.progress{display:flex;align-items:center;gap:10px;flex-shrink:0}
+.progress-pct{font-size:16px;font-weight:700;min-width:44px;text-align:right}
+.progress-bar{width:160px;height:20px;background:#d9dad6;position:relative}
+.progress-fill{height:100%;width:0;background:#50D0ED;transition:width .35s}
+
+.result{background:#f7f7f5;border-left:4px solid #10B981;border-radius:0 10px 10px 0;padding:20px 24px;margin-top:16px;display:none}
+.result.show{display:block}
+.result-title{font-size:22px;font-weight:700;margin-bottom:6px}
+.result-text{font-size:18px;font-weight:500;color:#333;line-height:1.6}
+.result-text strong{color:#000}
+
+@media (max-width:700px){
+  body{padding:16px}
+  .board{grid-template-columns:1fr 1fr}
+  .stage{grid-column:1/3;grid-row:1;min-height:230px}
+  .zone{min-height:220px}
+  .footer{flex-direction:column;align-items:flex-start}
+}
+</style>
+</head>
+<body>
+
+<div class="toolbar">
+  <button class="btn btn-primary" id="done" disabled>Done</button>
+  <button class="btn btn-ghost" id="restart">Restart</button>
+</div>
+
+<div class="board" id="board">
+  <div class="zone zone-a" data-zone="a">
+    <div class="zone-title"><span>I Already Do This</span><span class="zone-count" id="count-a">0</span></div>
+    <div id="body-a"></div>
+  </div>
+  <div class="stage" id="stage"></div>
+  <div class="zone zone-b" data-zone="b">
+    <div class="zone-title"><span>I’d Like to Do This More Often</span><span class="zone-count" id="count-b">0</span></div>
+    <div id="body-b"></div>
+  </div>
+</div>
+
+<div class="footer">
+  <span class="hint" id="hint">Drag the note into a column, or tap a column. Tap a placed note to move it to the other column.</span>
+  <div class="progress">
+    <span class="progress-pct" id="pct">0 %</span>
+    <div class="progress-bar"><div class="progress-fill" id="fill"></div></div>
+  </div>
+</div>
+
+<div class="result" id="result">
+  <div class="result-title">Your reflection</div>
+  <div class="result-text" id="result-text"></div>
+</div>
+
+<script>
+var CARDS=[
+  "Before I answer an unexpected request, I pause and check what kind of help the person needs.",
+  "When a situation changes, I notice and revisit my plan.",
+  "I adjust how I communicate to the person and the situation.",
+  "If my approach isn\u2019t working, I try a different one while the problem is still small.",
+  "When I adjust my approach, I keep the goal and quality standard in place.",
+  "I\u2019m comfortable working with people who approach a task differently from me.",
+  "In the first few minutes of a conversation, I listen before drawing conclusions.",
+  "I ask colleagues how my communication style comes across."
+];
+var ROT=[-3,2.5,-1.5,3,-2.5,1.5,-3.5,2];
+var COL=[0,1,3,4,5,2,3,0];
+
+var state={},next=0,locked=false;
+var stage=document.getElementById('stage');
+var bodies={a:document.getElementById('body-a'),b:document.getElementById('body-b')};
+var zoneEls={a:document.querySelector('[data-zone=a]'),b:document.querySelector('[data-zone=b]')};
+
+function reset(){
+  state={};next=0;locked=false;
+  document.body.classList.remove('locked');
+  document.getElementById('result').classList.remove('show');
+  render();
+}
+
+function placed(){return Object.keys(state).length}
+
+function render(){
+  bodies.a.innerHTML='';bodies.b.innerHTML='';stage.innerHTML='';
+  var na=0,nb=0;
+  Object.keys(state).forEach(function(k){
+    var i=+k,z=state[k],n=document.createElement('div');
+    n.className='note note-mini c'+COL[i];
+    n.style.transform='rotate('+(ROT[i]*0.6)+'deg)';
+    n.textContent=CARDS[i];
+    n.addEventListener('click',function(){
+      if(locked)return;
+      state[i]=(state[i]==='a')?'b':'a';
+      render();
+    });
+    bodies[z].appendChild(n);
+    if(z==='a')na++;else nb++;
+  });
+  ['a','b'].forEach(function(k){
+    if(!bodies[k].children.length){
+      var e=document.createElement('div');e.className='zone-empty';e.textContent='Drop notes here';bodies[k].appendChild(e);
+    }
+  });
+  document.getElementById('count-a').textContent=na;
+  document.getElementById('count-b').textContent=nb;
+
+  var total=CARDS.length,pc=placed();
+  if(pc<total){
+    var i=pc;
+    var big=document.createElement('div');
+    big.className='note note-big c'+COL[i];
+    big.style.transform='rotate('+ROT[i]+'deg)';
+    big.textContent=CARDS[i];
+    big.addEventListener('pointerdown',function(e){press(e,i,big)});
+    stage.appendChild(big);
+  }else{
+    var m=document.createElement('div');m.className='stage-msg';
+    m.textContent=locked?'Well done!':'All notes sorted \u2014 select Done.';
+    stage.appendChild(m);
+  }
+  var pct=Math.round(pc/total*100);
+  document.getElementById('pct').textContent=pct+' %';
+  document.getElementById('fill').style.width=pct+'%';
+  document.getElementById('done').disabled=(pc<total)||locked;
+}
+
+function zoneAt(x,y){
+  var el=document.elementFromPoint(x,y);
+  while(el&&!(el.dataset&&el.dataset.zone))el=el.parentElement;
+  return el?el.dataset.zone:null;
+}
+function clearOver(){zoneEls.a.classList.remove('over');zoneEls.b.classList.remove('over')}
+
+function press(e,i,node){
+  if(locked)return;
+  e.preventDefault();
+  var r=node.getBoundingClientRect(),ox=e.clientX-r.left,oy=e.clientY-r.top;
+  var ghost=document.createElement('div');
+  ghost.className=node.className.replace('note-big','')+' ghost note-big';
+  ghost.style.animation='none';
+  ghost.textContent=node.textContent;
+  ghost.style.width=r.width+'px';ghost.style.minHeight=r.height+'px';
+  ghost.style.transform=node.style.transform;
+  ghost.style.left=r.left+'px';ghost.style.top=r.top+'px';
+  document.body.appendChild(ghost);
+  node.style.opacity='.25';
+  function move(ev){
+    ghost.style.left=(ev.clientX-ox)+'px';
+    ghost.style.top=(ev.clientY-oy)+'px';
+    clearOver();
+    var z=zoneAt(ev.clientX,ev.clientY);
+    if(z)zoneEls[z].classList.add('over');
+  }
+  function up(ev){
+    document.removeEventListener('pointermove',move);
+    document.removeEventListener('pointerup',up);
+    document.removeEventListener('pointercancel',up);
+    clearOver();
+    var z=zoneAt(ev.clientX,ev.clientY);
+    ghost.remove();
+    if(z){state[i]=z;render()}
+    else node.style.opacity='1';
+  }
+  document.addEventListener('pointermove',move);
+  document.addEventListener('pointerup',up);
+  document.addEventListener('pointercancel',up);
+}
+
+['a','b'].forEach(function(k){
+  zoneEls[k].addEventListener('click',function(e){
+    if(locked||placed()>=CARDS.length)return;
+    if(e.target.closest('.note'))return;
+    state[placed()]=k;render();
+  });
+});
+
+document.getElementById('done').addEventListener('click',function(){
+  locked=true;
+  document.body.classList.add('locked');
+  render();
+  var na=0,nb=0;
+  Object.keys(state).forEach(function(k){if(state[k]==='a')na++;else nb++});
+  var txt;
+  if(nb===0)txt='You marked <strong>all '+na+' behaviors</strong> as things you already do. Notice which ones you do most consistently \u2014 and which you could still stretch.';
+  else if(na===0)txt='You marked <strong>all '+nb+' behaviors</strong> as things you\u2019d like to do more often. Pick one to try this week.';
+  else txt='<strong>'+na+' of 8</strong> are already part of your routine, and <strong>'+nb+' of 8</strong> are opportunities to grow. Choose one note from \u201cI\u2019d Like to Do This More Often\u201d and try it in your next conversation.';
+  document.getElementById('result-text').innerHTML=txt;
+  document.getElementById('result').classList.add('show');
+});
+
+document.getElementById('restart').addEventListener('click',reset);
+reset();
+</script>
+</body>
+</html>
