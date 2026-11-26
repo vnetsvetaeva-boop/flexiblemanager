@@ -84,12 +84,12 @@ body{font-family:'Bai Jamjuree',sans-serif;background:#fff;color:#000;padding:20
 
 <div class="board" id="board">
   <div class="zone zone-a" data-zone="a">
-    <div class="zone-title"><span>I Already Do This</span><span class="zone-count" id="count-a">0</span></div>
+    <div class="zone-title"><span>My Strengths</span><span class="zone-count" id="count-a">0</span></div>
     <div id="body-a"></div>
   </div>
   <div class="stage" id="stage"></div>
   <div class="zone zone-b" data-zone="b">
-    <div class="zone-title"><span>I’d Like to Do This More Often</span><span class="zone-count" id="count-b">0</span></div>
+    <div class="zone-title"><span>Area for Improvement</span><span class="zone-count" id="count-b">0</span></div>
     <div id="body-b"></div>
   </div>
 </div>
@@ -236,9 +236,9 @@ document.getElementById('done').addEventListener('click',function(){
   var na=0,nb=0;
   Object.keys(state).forEach(function(k){if(state[k]==='a')na++;else nb++});
   var txt;
-  if(nb===0)txt='You marked <strong>all '+na+' behaviors</strong> as things you already do. Notice which ones you do most consistently \u2014 and which you could still stretch.';
-  else if(na===0)txt='You marked <strong>all '+nb+' behaviors</strong> as things you\u2019d like to do more often. Pick one to try this week.';
-  else txt='<strong>'+na+' of 8</strong> are already part of your routine, and <strong>'+nb+' of 8</strong> are opportunities to grow. Choose one note from \u201cI\u2019d Like to Do This More Often\u201d and try it in your next conversation.';
+  if(nb===0)txt='You placed <strong>all '+na+' behaviors</strong> in My Strengths. Notice which ones you show most consistently \u2014 and which you could still stretch.';
+  else if(na===0)txt='You placed <strong>all '+nb+' behaviors</strong> in Area for Improvement. Pick one to try this week.';
+  else txt='<strong>'+na+' of 8</strong> behaviors are your strengths, and <strong>'+nb+' of 8</strong> are areas for improvement. Choose one note from \u201cArea for Improvement\u201d and try it in your next conversation.';
   document.getElementById('result-text').innerHTML=txt;
   document.getElementById('result').classList.add('show');
 });
