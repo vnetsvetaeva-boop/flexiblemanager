@@ -1,0 +1,201 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<link href="https://fonts.googleapis.com/css2?family=Bai+Jamjuree:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+*{margin:0;padding:0;box-sizing:border-box}
+body{font-family:'Bai Jamjuree',sans-serif;background:#fff;color:#000;padding:20px 28px;line-height:1.5;max-width:100%;margin:0 auto}
+
+.chat{background:#f7f7f5;border:1px solid #ecedea;border-radius:12px;overflow:hidden}
+.chat-top{display:flex;align-items:center;gap:12px;background:#fff;border-bottom:1px solid #ecedea;padding:12px 18px}
+.avatar{width:40px;height:40px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:16px;font-weight:700;color:#0A3D4F;flex-shrink:0;background:#80EAFF}
+.chat-name{font-size:18px;font-weight:700;line-height:1.2}
+.chat-role{font-size:14px;color:#999;line-height:1.2}
+.chat-progress{margin-left:auto;font-size:11px;font-weight:600;text-transform:uppercase;letter-spacing:.4px;padding:4px 10px;border-radius:5px;background:#E0F7FF;color:#0E7490;white-space:nowrap}
+
+.chat-body{padding:16px 18px 4px}
+
+.row{display:flex;gap:10px;margin-bottom:12px;animation:pop .3s ease both}
+.row.out{justify-content:flex-end}
+.row .avatar{width:34px;height:34px;font-size:14px;align-self:flex-end}
+.bubble{max-width:82%;padding:12px 16px;border-radius:4px 16px 16px 16px;background:#fff;border:1px solid #ecedea;font-size:18px;font-weight:500;color:#222;line-height:1.5}
+.row.out .bubble{background:#80EAFF;border-color:#50D0ED;color:#0A3D4F;border-radius:16px 16px 4px 16px}
+.meta{font-size:11px;font-weight:600;color:#999;margin-top:4px;letter-spacing:.3px}
+.row.out .meta{color:rgba(0,60,80,.5);text-align:right}
+.ctx{font-size:14px;color:#999;font-weight:500;margin-top:8px;padding-top:8px;border-top:1px dashed #ecedea}
+
+.typing{display:inline-flex;gap:5px;padding:14px 16px;border-radius:4px 16px 16px 16px;background:#fff;border:1px solid #ecedea}
+.typing span{width:8px;height:8px;border-radius:50%;background:#bbb;animation:blink 1.1s infinite}
+.typing span:nth-child(2){animation-delay:.18s}
+.typing span:nth-child(3){animation-delay:.36s}
+@keyframes blink{0%,60%,100%{opacity:.25;transform:translateY(0)}30%{opacity:1;transform:translateY(-3px)}}
+@keyframes pop{from{opacity:0;transform:translateY(8px)}to{opacity:1;transform:none}}
+
+.panel{background:#fff;border-top:1px solid #ecedea;padding:14px 18px 16px;animation:pop .3s ease both}
+.panel-label{font-size:14px;color:#999;font-weight:500;margin-bottom:10px}
+.opt{display:block;width:100%;text-align:left;font-family:inherit;font-size:18px;font-weight:500;color:#000;background:#f7f7f5;border:1.5px solid #ecedea;border-radius:10px;padding:14px 16px;margin-bottom:10px;cursor:pointer;line-height:1.5;transition:all .15s}
+.opt:last-child{margin-bottom:0}
+.opt:hover{border-color:#80EAFF;background:rgba(128,234,255,.12)}
+
+.fb{background:#f7f7f5;border-left:4px solid #80EAFF;border-radius:0 10px 10px 0;padding:14px 18px}
+.fb.best{border-left-color:#10B981}
+.fb.miss{border-left-color:#F59E0B}
+.fb-head{display:flex;align-items:center;gap:10px;margin-bottom:6px;flex-wrap:wrap}
+.fb-title{font-size:18px;font-weight:700}
+.badge{font-size:11px;font-weight:600;text-transform:uppercase;letter-spacing:.3px;padding:4px 10px;border-radius:5px}
+.b-best{background:#ECFDF5;color:#065F46}
+.b-miss{background:#FEF3C7;color:#92400E}
+.b-mode{background:#E0F7FF;color:#0E7490}
+.fb-text{font-size:18px;font-weight:500;color:#333;line-height:1.6}
+.fb-hint{font-size:14px;color:#999;margin-top:8px}
+
+.actions{display:flex;gap:10px;margin-top:14px;flex-wrap:wrap}
+.btn{font-family:inherit;font-size:18px;font-weight:700;padding:14px 22px;border-radius:10px;border:none;cursor:pointer;background:#80EAFF;color:#0A3D4F;transition:background .15s}
+.btn:hover{background:#50D0ED}
+.btn.ghost{background:#fff;border:1.5px solid #ecedea;color:#555}
+.btn.ghost:hover{background:#f4f4f3}
+
+.sum-title{font-size:22px;font-weight:700;margin-bottom:8px}
+.sum-line{display:flex;align-items:center;gap:10px;font-size:18px;font-weight:500;color:#333;padding:7px 0;border-bottom:1px solid #f4f4f3;flex-wrap:wrap}
+.sum-line .n{width:28px;height:28px;border-radius:50%;background:#80EAFF;color:#0A3D4F;font-size:14px;font-weight:700;display:flex;align-items:center;justify-content:center;flex-shrink:0}
+.sum-line .badges{margin-left:auto;display:flex;gap:6px;flex-wrap:wrap}
+.sum-text{font-size:18px;font-weight:500;color:#333;line-height:1.6;margin-top:12px}
+.reflect{background:#f7f7f5;border-left:4px solid #80EAFF;border-radius:0 10px 10px 0;padding:14px 18px;margin-top:12px;font-size:18px;font-weight:500;color:#333;line-height:1.6}
+
+@media(max-width:520px){body{padding:16px}.bubble{max-width:90%}.chat-progress{display:none}}
+</style>
+</head>
+<body>
+
+<div class="chat">
+  <div class="chat-top" id="chatTop"></div>
+  <div class="chat-body" id="body"></div>
+  <div id="panel"></div>
+</div>
+
+<script>
+var MSGS=[
+ {name:"Rachel",role:"Analyst",time:"2:50 p.m.",out:"2:52 p.m.",mode:"Develop",
+  text:"I’m not sure how to present the risks in the report. Should I use a list or a table? I’m also not sure which risks to include. Could you take a look when you have time? It’s due in a week.",
+  opts:[
+   {t:"Use a table with the risk, how likely it is, and what we’ll do about it. Include everything from the last report.",ok:false,
+    fb:"A ready-made format will get this report done. But Rachel has a week and can work this out herself, and she may bring the same question next time. Direct saves time today, not on the next report."},
+   {t:"Don’t worry about it yet. We’ll sit down and do it together closer to the deadline, once you’ve had time to collect the material.",ok:false,
+    fb:"It sounds supportive, but Rachel still doesn’t know where to start. “Closer to the deadline” doesn’t answer “could you take a look when you have time?”, so the anchor “agreement” is weakened."},
+   {t:"Draft a structure and send it to me. What does the reader most need to know about the risks? We can decide what stays.",ok:true,
+    fb:"You give Rachel a question to guide her choice, ask for a first draft and offer to review it. She learns to make this choice herself, and the deadline stays under control.",
+    hint:"Signals: stakes are low (a week to go), clarity is partial (she knows what the section is about, not its form), and she is asking for help working out an approach, not for a ready answer."}
+  ]},
+ {name:"Andrew",role:"Manager in another department",time:"3:30 p.m.",out:"3:33 p.m.",mode:"Direct",
+  text:"Could you add two more metrics to Friday’s report? It’s a small thing. Just pop them in.",
+  ctx:"You and Andrew agreed on the contents of the report last week.",
+  opts:[
+   {t:"That changes the agreed scope, so we’ll need to move Friday’s deadline or drop some metrics. Let’s pick one today and confirm in the chat.",ok:true,
+    fb:"You explain the trade-off and propose a next step. The agreement stays clear because any change is made together, and you show respect for Andrew’s request by being ready to discuss it.",
+    hint:"Signals: stakes are noticeable (your team’s deadline and the relationship with his department), clarity is high on Andrew’s side, and the request changes what was already agreed, even though it is called a small thing."},
+   {t:"Sure, no problem. We’ll add both metrics to Friday’s report and find a way to make it work in time.",ok:false,trap:"Chameleon trap",
+    fb:"You agree straight away although the scope was already set and the team keeps the same deadline. It gets easier for Andrew, not for your team, and next time agreements with you will read as provisional."},
+   {t:"The scope was approved last week, so we’re keeping the report as it is. Please send any new requests for the next one.",ok:false,
+    fb:"You keep to the agreed scope, but Andrew gets neither an explanation nor options. That strains the anchor “respect”: it becomes harder to keep talking about his request, and he may bring it back through your manager."}
+  ]},
+ {name:"Laura",role:"Project lead",time:"4:40 p.m.",out:"4:42 p.m.",mode:"Direct",
+  text:"We need to decide by 6 p.m. today whether to take on the client’s new task this sprint. If we do, we’ll have to move two items already in the sprint.",
+  ctx:"You have estimates from two developers. You haven’t spoken to the others yet.",
+  opts:[
+   {t:"I’ll talk to the whole team first and get back to you tomorrow when I have the full picture. I don’t want to decide on partial estimates.",ok:false,trap:"Observer trap",
+    fb:"You want the full picture, but Laura needs a decision by 6 p.m. Waiting until tomorrow leaves her without one, and the goal (to decide) is not reached."},
+   {t:"Based on two developers’ estimates, let’s take it if the second item we’d move isn’t critical for the client. I’ll confirm by 5:30; if it is, we’ll revisit.",ok:true,
+    fb:"You give a provisional decision, name the condition, and commit to check it before the deadline. You can revisit the decision if a material detail changes.",
+    hint:"Signals: clarity is partial (you have two developers’ estimates, not the rest), stakes are moderate, and the request is a decision today."},
+   {t:"You decide. You know the project better than I do, and I’ll back whatever you choose. I’m fine either way.",ok:false,
+    fb:"This hands the question back to Laura. She is still waiting for your decision on the part you are responsible for, so the anchor “goal” is not supported."}
+  ]}
+];
+
+var COLORS=["#80EAFF","#B8F0C8","#FFD9A8"];
+var results=[], body=document.getElementById('body'), panel=document.getElementById('panel'), chatTop=document.getElementById('chatTop');
+
+function el(html){var d=document.createElement('div');d.innerHTML=html;return d.firstChild}
+function setPanel(node){panel.innerHTML='';panel.appendChild(node)}
+
+function renderTop(i){
+  var m=MSGS[i];
+  chatTop.innerHTML='<div class="avatar" style="background:'+COLORS[i]+'">'+m.name.charAt(0)+'</div>'+
+   '<div><div class="chat-name">'+m.name+'</div><div class="chat-role">'+m.role+'</div></div>'+
+   '<div class="chat-progress">Message '+(i+1)+' of '+MSGS.length+'</div>';
+}
+
+function showMsg(i){
+  var m=MSGS[i];
+  renderTop(i);
+  panel.innerHTML='';
+  body.innerHTML='';
+  results[i]={ok:false};
+  body.appendChild(el('<div class="row"><div class="avatar" style="background:'+COLORS[i]+'">'+m.name.charAt(0)+'</div><div class="typing"><span></span><span></span><span></span></div></div>'));
+  setTimeout(function(){
+    body.innerHTML='';
+    var ctx=m.ctx?'<div class="ctx">'+m.ctx+'</div>':'';
+    body.appendChild(el('<div class="row"><div class="avatar" style="background:'+COLORS[i]+'">'+m.name.charAt(0)+'</div><div><div class="bubble">'+m.text+ctx+'</div><div class="meta">'+m.name+' · '+m.time+'</div></div></div>'));
+    setTimeout(function(){showOptions(i)},300);
+  },900);
+}
+
+function showOptions(i){
+  var m=MSGS[i];
+  var box=el('<div class="panel"><div class="panel-label">What would you say?</div></div>');
+  m.opts.forEach(function(o,j){
+    var b=document.createElement('button');
+    b.className='opt';b.textContent=o.t;
+    b.onclick=function(){choose(i,j)};
+    box.appendChild(b);
+  });
+  setPanel(box);
+}
+
+function choose(i,j){
+  var m=MSGS[i],o=m.opts[j];
+  var mine=el('<div class="row out"><div><div class="bubble">'+o.t+'</div><div class="meta">You · '+m.out+'</div></div></div>');
+  body.appendChild(mine);
+  var head='<div class="fb-head"><div class="fb-title">'+(o.ok?'Best response':'Not the best response')+'</div>'+
+    (o.ok?'<span class="badge b-best">'+m.mode+' mode</span>':(o.trap?'<span class="badge b-miss">'+o.trap+'</span>':''))+'</div>';
+  var hint=o.hint?'<div class="fb-hint">'+o.hint+'</div>':'';
+  var box=el('<div class="panel"><div class="fb '+(o.ok?'best':'miss')+'">'+head+'<div class="fb-text">'+o.fb+'</div>'+hint+'</div><div class="actions"></div></div>');
+  var acts=box.querySelector('.actions');
+  if(!o.ok){
+    var r=document.createElement('button');r.className='btn ghost';r.textContent='Try another reply';
+    r.onclick=function(){body.removeChild(mine);showOptions(i)};
+    acts.appendChild(r);
+  }
+  var n=document.createElement('button');n.className='btn';
+  n.textContent=i<MSGS.length-1?'Next':'See summary';
+  n.onclick=function(){
+    results[i].ok=o.ok;
+    if(i<MSGS.length-1){showMsg(i+1)}else{showSummary()}
+  };
+  acts.appendChild(n);
+  setPanel(box);
+}
+
+function showSummary(){
+  chatTop.innerHTML='<div class="avatar">✓</div><div><div class="chat-name">Scenario summary</div><div class="chat-role">Three messages</div></div><div class="chat-progress">Done</div>';
+  body.innerHTML='';
+  var lines=MSGS.map(function(m,i){
+    return '<div class="sum-line"><span class="n">'+(i+1)+'</span>'+m.name+
+      '<span class="badges"><span class="badge b-mode">'+m.mode+'</span>'+
+      '<span class="badge '+(results[i].ok?'b-best':'b-miss')+'">'+(results[i].ok?'Reply ✓':'Reply revised')+'</span></span></div>';
+  }).join('');
+  var box=el('<div class="panel" style="border-top:none"><div class="sum-title">How the replies fit together</div>'+lines+
+   '<div class="sum-text">Rachel needed room to work out an approach, so the best reply was Develop. Andrew’s request changed an agreement, and Laura needed a decision by a deadline, so the best replies to both were Direct. The modes differed, and the anchors stayed in place: respect for what Rachel can do on her own, the agreement with Andrew, the goal with Laura.</div>'+
+   '<div class="sum-text">Two of the replies fell into a trap: the Chameleon (giving in under pressure) and the Observer (collecting information when you can already act). If your replies were different, compare them with the feedback and see which anchor moved.</div>'+
+   '<div class="reflect">Look back at the replies you picked. Where did your approach move things forward? Which goal, standard, agreement, or sign of respect mattered most to keep?</div>'+
+   '<div class="actions"><button class="btn ghost" id="restart">Start over</button></div></div>');
+  setPanel(box);
+  box.querySelector('#restart').onclick=function(){results=[];showMsg(0)};
+}
+
+showMsg(0);
+</script>
+</body>
+</html>
